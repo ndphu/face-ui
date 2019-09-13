@@ -85,35 +85,8 @@ class Api {
       });
     });
   }
-
-  driveUpload = (formData, accessToken) => {
-    const url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id'
-    const headers = {
-      'Authorization': `Bearer ${accessToken}`
-    };
-    return new Promise((resolve, reject) => {
-      fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: formData,
-      }).then(resp => {
-        if (resp.status >= 200 && resp.status <= 299) {
-          resp.json().then(data => {
-            resolve(data);
-          })
-        } else {
-          resp.json().then(data => {
-            reject(data);
-          });
-        }
-      }).catch(err => {
-        reject(err);
-      });
-    });
-  }
 }
 
 const api = new Api();
-api.token = localStorage.getItem("jwt.token");
 
 export default api;
