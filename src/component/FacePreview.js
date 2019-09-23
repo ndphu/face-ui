@@ -5,7 +5,7 @@ import api from "../api/Api"
 class FacePreview extends React.Component {
     state = {
         loading: false,
-        deviceId: "rpi-00000000ece92c87",
+        deviceId: "window-59a3b558-2207-45a3-8535-b61fc6fe454f",
     };
 
     componentDidMount = (props) => {
