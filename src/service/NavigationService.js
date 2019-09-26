@@ -1,58 +1,62 @@
 class NavigationService {
 
-  recentSearches = [];
+    recentSearches = [];
 
-  setLocation = (location) => {
-    this.location = location;
-  };
+    setLocation = (location) => {
+        this.location = location;
+    };
 
-  setHistory = (history) => {
-    this.history = history;
-  };
+    setHistory = (history) => {
+        this.history = history;
+    };
 
-  goToAccount = (id) => {
-    this.history.push(`/account/${id}`)
-  };
+    goToAccount = (id) => {
+        this.history.push(`/account/${id}`)
+    };
 
-  goToAccountsPage(page, rowsPerPage) {
-    this.history.push(`/accounts?page=${page}&size=${rowsPerPage}`)
-  }
+    goToAccountsPage(page, rowsPerPage) {
+        this.history.push(`/accounts?page=${page}&size=${rowsPerPage}`)
+    }
 
-  goToVideoView(accountId, fileId) {
-    this.history.push(`/view/video?accountId=${accountId}&fileId=${fileId}`)
-  }
+    goToVideoView(accountId, fileId) {
+        this.history.push(`/view/video?accountId=${accountId}&fileId=${fileId}`)
+    }
 
-  goTo = (path) => {
-    this.history.push(path);
-  };
+    goTo = (path) => {
+        this.history.push(path);
+    };
 
-  goToAccounts = () => {
-    this.history.push('/accounts');
-  };
+    goToAccounts = () => {
+        this.history.push('/accounts');
+    };
 
-  goToLoginPage = () => {
-    this.history.push(`/user/login`);
-  };
+    goToLoginPage = () => {
+        this.history.push(`/user/login`);
+    };
 
-  goToRegister = () => {
-    this.history.push(`/user/register`);
-  };
+    goToRegister = () => {
+        this.history.push(`/user/register`);
+    };
 
-  goToUserInfoPage = () => {
-    this.history.push(`/user/info`);
-  };
+    goToUserInfoPage = () => {
+        this.history.push(`/user/info`);
+    };
 
-  goToProjects = () => {
-    this.history.push(`/projects`);
-  };
+    goToProjects = () => {
+        this.history.push(`/projects`);
+    };
 
-  goToProject = (id) => {
-    this.history.push(`/project/${id}`);
-  };
+    goToProject = (id) => {
+        this.history.push(`/project/${id}`);
+    };
 
-  goToDevice(id) {
-    this.history.push(`/device/${id}`)
-  }
+    goToDevice = (device) => {
+        this.history.push(`/device/${device.deviceId}`)
+    };
+
+    goToDeviceRecognizeSetup = (device) => {
+        this.history.push(`/device/${device.deviceId}/recognizeSetup`)
+    };
 }
 
 const navigationService = new NavigationService();

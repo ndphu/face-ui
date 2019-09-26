@@ -5,44 +5,37 @@ import List from '@material-ui/core/List/List';
 import ListItem from '@material-ui/core/ListItem/ListItem';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import navigationService from '../service/NavigationService';
+import api from "../api/Api";
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 const styles = theme => ({});
 
 class DeviceList extends React.Component {
 
-  state = {
-    devices: [
-      {
-        "id": "window-59a3b558-2207-45a3-8535-b61fc6fe454f",
-        "name": "Windows PC",
-      },
-      {
-        "id": "rpi-00000000ece92c87",
-        "name": "Raspberry",
-      }
-    ]
-  };
+    state = {
+        devices: []
+    };
+    handleDeviceClick = (d) => {
+        navigationService.goToDevice(d);
+    };
 
-  handleDeviceClick = (d) => {
-    navigationService.goToDevice(d.id);
-  };
-
-  render = () => {
-    const {classes} = this.props;
-    return (
-      <div>
-        <h2>My Devices</h2>
-        <List>
-          {this.state.devices.map(d =>
-            <ListItem button>
-              <ListItemText primary={d.name} secondary={d.id} onClick={() => {
-                this.handleDeviceClick(d);
-              }}/>
-            </ListItem>)}
-        </List>
-      </div>
-    );
-  }
+    render = () => {
+        const {classes, devices} = this.props;
+        return (
+            <div>
+                {devices &&
+                <List>
+                    {devices.map(d =>
+                        <ListItem button key={`device-item-${d.id}`} onClick={() => {
+                            this.handleDeviceClick(d);
+                        }}>
+                            <ListItemText primary={d.name} secondary={d.deviceId} />
+                        </ListItem>)}
+                </List>
+                }
+            </div>
+        );
+    }
 }
 
 export default withStyles(styles)(DeviceList);

@@ -1,31 +1,39 @@
 import React from 'react';
 import './App.css';
-import FacePreview from "./component/FacePreview";
 import {HashRouter, Redirect, Route, Switch} from 'react-router-dom';
 import DeviceList from './component/DeviceList';
-import DeviceDetails from './component/DeviceDetails';
+import DeviceRecognizeSetup from './component/DeviceRecognizeSetup';
 import navigationService from './service/NavigationService';
+import ProjectList from "./component/ProjectList";
+import Project from "./component/Project";
+import DeviceDetails from "./component/DeviceDetails";
 
 
-function App() {
-  return (
-    <div className="App">
-      {/*<img src={'http://localhost:8080/api/device/rpi-00000000ece92c87/capture/live'}/>*/}
-      <HashRouter>
-        <Route path={'/'} render={(props) => {
-          navigationService.setLocation(props.location);
-          navigationService.setHistory(props.history);
-          return (
-            <Switch>
-              <Route path={"/devices"} component={DeviceList}/>
-              <Route path={"/device/:deviceId"} component={DeviceDetails}/>
-              <Redirect exact={true} from={'/'} to={'/devices'}/>
-            </Switch>
-          );
-        }}/>
-      </HashRouter>
-    </div>
-  );
+class App extends React.Component {
+    render = () => {
+        return (
+            <div className="App">
+                <HashRouter>
+                    <Route path={'/'} render={(props) => {
+                        navigationService.setLocation(props.location);
+                        navigationService.setHistory(props.history);
+                        return (
+                            <Switch>
+                                <Route path={"/projects"} component={ProjectList}/>
+                                <Route path={"/project/:projectId"} component={Project}/>
+                                <Route path={"/devices"} component={DeviceList}/>
+                                <Route exact path={"/device/:deviceId"} component={DeviceDetails}/>
+                                <Route path={"/device/:deviceId/recognizeSetup"} component={DeviceRecognizeSetup}/>
+                                <Redirect exact={true} from={'/'} to={'/projects'}/>
+                            </Switch>
+                        );
+                    }}/>
+                </HashRouter>
+
+            </div>
+        );
+    };
+
 }
 
 export default App;
