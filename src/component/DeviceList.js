@@ -1,12 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import List from '@material-ui/core/List/List';
 import ListItem from '@material-ui/core/ListItem/ListItem';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import navigationService from '../service/NavigationService';
-import api from "../api/Api";
-import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import Table from "@material-ui/core/Table/Table";
+import TableHead from "@material-ui/core/TableHead/TableHead";
+import TableRow from "@material-ui/core/TableRow/TableRow";
+import TableCell from "@material-ui/core/TableCell/TableCell";
+import TableBody from "@material-ui/core/TableBody/TableBody";
 
 const styles = theme => ({});
 
@@ -20,18 +22,28 @@ class DeviceList extends React.Component {
     };
 
     render = () => {
-        const {classes, devices} = this.props;
+        const {devices} = this.props;
         return (
             <div>
                 {devices &&
-                <List>
-                    {devices.map(d =>
-                        <ListItem button key={`device-item-${d.id}`} onClick={() => {
-                            this.handleDeviceClick(d);
-                        }}>
-                            <ListItemText primary={d.name} secondary={d.deviceId} />
-                        </ListItem>)}
-                </List>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Device Name</TableCell>
+                            <TableCell>Device Id</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {devices.map(d => {
+                            return (
+                                <TableRow key={`list-item-rule-${d.id}`} onClick={() => {navigationService.goToDevice(d)}}>
+                                    <TableCell>{d.name}</TableCell>
+                                    <TableCell>{d.deviceId}</TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
                 }
             </div>
         );

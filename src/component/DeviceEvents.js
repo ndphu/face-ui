@@ -13,17 +13,16 @@ const styles = (theme) => ({
 class DeviceEvents extends React.Component {
    render = () => {
 
-       const {events} = this.props;
+       const {events, device} = this.props;
 
        return (
            <div>
                <Table>
                    <TableHead>
                        <TableRow>
-                           <TableCell>Device</TableCell>
                            <TableCell>Type</TableCell>
                            <TableCell>Timestamp</TableCell>
-                           <TableCell>Label</TableCell>
+                           <TableCell>Result</TableCell>
                            <TableCell>Error</TableCell>
                        </TableRow>
                    </TableHead>
@@ -31,10 +30,9 @@ class DeviceEvents extends React.Component {
                        {events && events.map(function (event) {
                            return (
                                <TableRow key={`list-item-event-${event.id}`}>
-                                   <TableCell>{event.deviceId}</TableCell>
                                    <TableCell>{event.type}</TableCell>
                                    <TableCell>{event.timestamp}</TableCell>
-                                   <TableCell>{event.labels.join(', ')}</TableCell>
+                                   <TableCell>{event.labels.indexOf(device.projectId) >= 0 ? 'PRESENT' : 'MISSING'}</TableCell>
                                    <TableCell>{event.error}</TableCell>
                                </TableRow>
                            )

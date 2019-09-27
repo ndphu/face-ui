@@ -3,28 +3,43 @@ import {withStyles} from "@material-ui/core";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
-import api from "../api/Api";
+import Table from "@material-ui/core/Table/Table";
+import TableHead from "@material-ui/core/TableHead/TableHead";
+import TableRow from "@material-ui/core/TableRow/TableRow";
+import TableCell from "@material-ui/core/TableCell/TableCell";
+import TableBody from "@material-ui/core/TableBody/TableBody";
 
 
 const styles = theme => ({});
 
 
 class RuleList extends React.Component {
-    state = {};
-
     render = () => {
-        const {classes, rules} = this.props;
+        const {rules} = this.props;
         return (
             <div>
-                <List>
-                    {rules && rules.map(rule => {
-                        return (
-                            <ListItem key={`rule-list-item-${rule.id}`} button>
-                                <ListItemText primary={`Notify via ${rule.action.type} after ${rule.interval} minutes`} secondary={`On device ${rule.deviceId}`}/>
-                            </ListItem>
-                        )
-                    })}
-                </List>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Action Type</TableCell>
+                            <TableCell>Interval (minutes)</TableCell>
+                            <TableCell>Device Id</TableCell>
+                            <TableCell>Label</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rules && rules.map(rule => {
+                            return (
+                                <TableRow key={`list-item-rule-${rule.id}`}>
+                                    <TableCell>{rule.action.type}</TableCell>
+                                    <TableCell>{rule.interval}</TableCell>
+                                    <TableCell>{rule.deviceId}</TableCell>
+                                    <TableCell>{rule.label}</TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
             </div>
         )
     }

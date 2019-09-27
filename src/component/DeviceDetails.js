@@ -7,14 +7,6 @@ import AppBar from "@material-ui/core/AppBar/AppBar";
 import api from "../api/Api";
 import Button from "@material-ui/core/Button/Button";
 import navigationService from "../service/NavigationService";
-import List from "@material-ui/core/List/List";
-import ListItem from "@material-ui/core/ListItem/ListItem";
-import ListItemText from "@material-ui/core/ListItemText/ListItemText";
-import Table from "@material-ui/core/Table/Table";
-import TableHead from "@material-ui/core/TableHead/TableHead";
-import TableRow from "@material-ui/core/TableRow/TableRow";
-import TableCell from "@material-ui/core/TableCell/TableCell";
-import TableBody from "@material-ui/core/TableBody/TableBody";
 import DeviceEvents from "./DeviceEvents";
 
 const styles = (theme) => ({
@@ -84,7 +76,7 @@ class DeviceDetails extends React.Component {
                         </Paper>
                         <Paper className={classes.paper}>
                             <Typography variant={'h6'}>Events</Typography>
-                            <DeviceEvents events={events}/>
+                            <DeviceEvents events={events} device={device}/>
                         </Paper>
                     </div>
                     }

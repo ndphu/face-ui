@@ -7,6 +7,7 @@ import navigationService from './service/NavigationService';
 import ProjectList from "./component/ProjectList";
 import Project from "./component/Project";
 import DeviceDetails from "./component/DeviceDetails";
+import BackendSetup from "./component/BackendSetup";
 
 
 class App extends React.Component {
@@ -24,6 +25,7 @@ class App extends React.Component {
                                 <Route path={"/devices"} component={DeviceList}/>
                                 <Route exact path={"/device/:deviceId"} component={DeviceDetails}/>
                                 <Route path={"/device/:deviceId/recognizeSetup"} component={DeviceRecognizeSetup}/>
+                                <Route path={"/config"} component={BackendSetup}/>
                                 <Redirect exact={true} from={'/'} to={'/projects'}/>
                             </Switch>
                         );

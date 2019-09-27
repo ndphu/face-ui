@@ -19,7 +19,14 @@ class NotificationService {
         if (icon) {
             notificationConfig.icon = icon;
         }
-        Push.create(title, notificationConfig).then()
+        Push.create(title, notificationConfig).then().catch(err => {
+            console.log("Fail to show notification", err);
+            Push.Permission.request(function () {
+                console.log("Permission granted");
+            }, function () {
+                console.log("Permission rejected");
+            });
+        })
     };
 
 
@@ -105,7 +112,12 @@ class NotificationService {
                 });
                 break
             }
+
+            default: {
+                console.log("Unknown message", msg)
+            }
         }
+
     };
 }
 

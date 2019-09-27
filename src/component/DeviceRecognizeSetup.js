@@ -1,15 +1,12 @@
 import React from 'react';
 import config from '../api/Config'
 import withStyles from '@material-ui/core/styles/withStyles';
-import Button from "@material-ui/core/Button/Button";
 import api from "../api/Api";
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import Typography from "@material-ui/core/Typography/Typography";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions/DialogActions";
-import Dialog from "@material-ui/core/Dialog/Dialog";
+import Button from "@material-ui/core/Button/Button";
+import RecognizeResultList from "./RecognizeResultList";
 
 const styles = theme => ({
     title: {
@@ -17,16 +14,21 @@ const styles = theme => ({
     },
     container: {
         margin: theme.spacing.unit * 2,
+        textAlign: 'center',
     },
-
     button: {
-        marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit,
+        margin: theme.spacing.unit,
+
+    },
+    recognizeContainer: {
+        marginTop: theme.spacing.unit * 2,
     }
 });
 
 class DeviceRecognizeSetup extends React.Component {
-    state = {liveStream: false, showingRecognizeResult: false};
+    state = {liveStream: false, showingRecognizeResult: false, mode: 'normal'};
+    numberOfFrame = 20;
+    delay = 500;
 
     componentDidMount = () => {
         this.setState({deviceId: this.props.match.params.deviceId});
@@ -46,60 +48,21 @@ class DeviceRecognizeSetup extends React.Component {
     };
 
     handleRecognizeClick = () => {
-        const _this = this;
-        this.setState({loading: true}, function () {
-            api.get(`/device/${_this.state.deviceId}/recognizeFaces?timeout=5`).then(resp => {
-                if (resp.recognizedFaces && resp.recognizedFaces.length > 0) {
-                    _this.setState({showingRecognizeResult: true, recognizedData: resp}, function () {
-                        setTimeout(_this.drawRecognizedResult, 250);
-                    })
-                } else {
-                    _this.setState({showingRecognizeResult: false, recognizedData: resp})
-                }
-            }).finally(() => {
-                _this.setState({loading: false})
-            });
-        });
-
+        this.setState({
+            mode: 'capturing',
+            recognizedResult: null,
+        }, this.startRecognizing)
     };
 
-    drawRecognizedResult = () => {
-        const resp = this.state.recognizedData;
-        if (!resp) {
-            return
-        }
-        const canvas = document.getElementById("livestream");
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "24px Roboto";
-        ctx.lineWidth = "4";
-        const img = new Image();
-        img.onload = () => {
-            ctx.drawImage(img, 0, 0);
-            if (resp.recognizedFaces && resp.recognizedFaces.length) {
-                for (let i = 0; i < resp.recognizedFaces.length; i++) {
-                    const face = resp.recognizedFaces[i];
-                    const rect = face.rect;
-                    ctx.beginPath();
-
-                    if (face.category >= 0) {
-                        ctx.strokeStyle = "green";
-                        ctx.rect(rect.Min.X, rect.Min.Y, rect.Max.X - rect.Min.X, rect.Max.Y - rect.Min.Y);
-                        ctx.stroke();
-                        ctx.fillStyle = "green";
-                        ctx.fillText(face.label, rect.Min.X + 8, rect.Max.Y - 8);
-                    } else {
-                        ctx.strokeStyle = "yellow";
-                        ctx.rect(rect.Min.X, rect.Min.Y, rect.Max.X - rect.Min.X, rect.Max.Y - rect.Min.Y);
-                        ctx.stroke();
-                        ctx.fillStyle = "yellow";
-                        ctx.fillText("UNKNOWN", rect.Min.X + 8, rect.Max.Y - 8);
-                    }
-                }
-            }
-        };
-        img.src = "data:image/png;base64," + resp.image
+    startRecognizing = () => {
+        api.get(`/device/${this.state.device.deviceId}/startRecognize?frameDelay=${this.delay}&totalPics=${this.numberOfFrame}`)
+            .then(resp => {
+                this.setState({recognizedResult: resp, mode: 'normal'})
+            }).catch(() => {
+            this.setState({recognizedResult: null, mode: 'normal'})
+        })
     };
+
 
     handleCloseRecognizeResultDialog = () => {
         this.setState({showingRecognizeResult: false})
@@ -140,12 +103,40 @@ class DeviceRecognizeSetup extends React.Component {
                 }
             }
         }
+    };
 
+    handleSubmitFaceData = () => {
+        const _this = this;
+        const {recognizedResult, device} = this.state;
+        if (!device || !recognizedResult || recognizedResult.length === 0) {
+
+        } else {
+            const data = [];
+            recognizedResult.forEach((e) => {
+                if (!e.faceDetailsList || e.faceDetailsList.length !== 1) {
+                    return
+                }
+                const fd = e.faceDetailsList[0];
+                data.push({
+                    "label": device.projectId,
+                    "descriptor": fd.descriptor,
+                    "deviceId": device.deviceId,
+                    "projectId": device.projectId,
+                });
+            });
+            api.post(`/labels`, data).then(resp => {
+                _this.setState({recognizedResult: null});
+            })
+        }
+    };
+
+    handleCancelClick = () => {
+        this.setState({recognizedResult: null})
     };
 
     render = () => {
         const {classes} = this.props;
-        const {openFacePreview, recognizedData, showingRecognizeResult, loading, device, realTimeLabels} = this.state;
+        const {device, mode, recognizedResult} = this.state;
         return (
             <div>
                 <AppBar position="static">
@@ -158,36 +149,49 @@ class DeviceRecognizeSetup extends React.Component {
                 {device &&
                 <div className={classes.container}>
                     <img width={640} height={480}
-                         src={`${config.baseUrl}/device/${this.state.deviceId}/capture/live`}
-                         style={{display: 'block'}}/>
-
-                    <Button color={'primary'} variant={'contained'}
-                            disabled={loading}
-                            className={classes.button}
-                            onClick={this.handleRecognizeClick}>Recognize</Button>
-                    {
-                        realTimeLabels && realTimeLabels.map(l =>
-                        <Typography
-                            key={`realtime-label-${l}`}
-                            variant={'h6'}>{l}</Typography>)
+                         src={`${config.baseUrl}/device/${this.state.deviceId}/capture/live`}/>
+                    {!recognizedResult &&
+                    <div>
+                        {mode === 'normal' &&
+                        <Typography variant={'h6'}>
+                            Make sure you there is only you in front of the camera then press the button bellow
+                        </Typography>
+                        }
+                        {mode === 'capturing' &&
+                        <Typography variant={'h6'}>
+                            Move your face slowly to allow the camera to capture as many aspect of your face as possible
+                        </Typography>
+                        }
+                        <Button variant={'contained'}
+                                color={'primary'}
+                                onClick={this.handleRecognizeClick}
+                                disabled={mode === 'capturing'}
+                        >
+                            {mode === 'normal' ? "Start Recognize" : "Recognizing"}
+                        </Button>
+                    </div>
                     }
-
-                    <Dialog open={showingRecognizeResult}
-                            onClose={this.handleCloseRecognizeResultDialog}
-                            maxWidth={"xl"}
-                    >
-                        <DialogTitle>Recognize Result</DialogTitle>
-                        <DialogContent>
-                            <canvas width={640} height={480}
-                                    id={'livestream'}
-                                    onClick={this.onCanvasClick}/>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleCloseRecognizeResultDialog} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                    {recognizedResult &&
+                    <div className={classes.recognizeContainer}>
+                        <Typography variant={'h6'}>
+                            Please review the detection result below and press OK to save the your face data.
+                        </Typography>
+                        <RecognizeResultList result={recognizedResult}/>
+                        <Button variant={'contained'}
+                                color={'primary'}
+                                onClick={this.handleSubmitFaceData}
+                                className={classes.button}
+                        >
+                            OK
+                        </Button>
+                        <Button variant={'contained'}
+                                className={classes.button}
+                                onClick={this.handleCancelClick}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                    }
                 </div>
                 }
             </div>

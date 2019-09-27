@@ -36,6 +36,10 @@ const styles = theme => ({
         padding: theme.spacing(3, 2),
         marginTop: theme.spacing.unit * 2,
     },
+    button: {
+        marginTop: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,
+    }
 });
 
 class Project extends React.Component {
@@ -197,6 +201,7 @@ class Project extends React.Component {
                             <DeviceList devices={devices}/>
                             <Button color='primary'
                                     variant='contained'
+                                    className={classes.button}
                                     onClick={this.handleAddDeviceClick}>
                                 Add Device
                             </Button>
@@ -235,6 +240,7 @@ class Project extends React.Component {
                             <RuleList rules={rules}/>
                             <Button color='primary'
                                     variant='contained'
+                                    className={classes.button}
                                     onClick={this.handleAddRuleClick}>
                                 Add Rule
                             </Button>

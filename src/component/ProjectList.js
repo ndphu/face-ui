@@ -6,16 +6,16 @@ import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Button from "@material-ui/core/Button/Button";
 import Dialog from "@material-ui/core/Dialog/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions/DialogActions";
-import TextField from "@material-ui/core/TextField/TextField";
-import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import navigationService from "../service/NavigationService";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Typography from "@material-ui/core/Typography/Typography";
+import Paper from "@material-ui/core/Paper";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import TextField from "@material-ui/core/TextField/TextField";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import {withStyles} from "@material-ui/core";
-
 
 const styles = (theme) => ({
     root: {
@@ -26,7 +26,11 @@ const styles = (theme) => ({
     },
     container: {
         margin: theme.spacing.unit * 2,
-    }
+    },
+    paper: {
+        padding: theme.spacing(3, 2),
+        marginTop: theme.spacing.unit * 2,
+    },
 });
 
 class ProjectList extends React.Component {
@@ -98,30 +102,37 @@ class ProjectList extends React.Component {
                 <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
-                            Projects
+                            Smart Working Desk
                         </Typography>
-
                     </Toolbar>
                 </AppBar>
                 <div className={classes.container}>
                     {loading && <LinearProgress variant={"indeterminate"}/>}
                     {!loading && projects &&
-                    <List>
-                        {projects.map(p =>
-                            <ListItem key={`project-list-item-${p.id}`} button
-                                      onClick={() => {
-                                          this.onProjectClick(p)
-                                      }}>
-                                <ListItemText primary={p.name} secondary={p.projectId}/>
-                            </ListItem>
-                        )
-                        }
-                    </List>
+                    <Paper className={classes.paper}>
+                        <Typography variant={'h6'}
+                                    className={classes.label}
+                        >
+                            My Desks
+                        </Typography>
+                        <List>
+                            {projects.map(p =>
+                                <ListItem key={`project-list-item-${p.id}`} button
+                                          onClick={() => {
+                                              this.onProjectClick(p)
+                                          }}>
+                                    <ListItemText primary={p.name} secondary={p.projectId}/>
+                                </ListItem>
+                            )
+                            }
+                        </List>
+                    </Paper>
                     }
                     <Button color='primary'
                             variant='contained'
+                            className={classes.button}
                             onClick={this.handleAddProjectClick}>
-                        Add Project
+                        Add New Desk
                     </Button>
                     <Dialog open={openAddProjectDialog}
                             fullWidth
@@ -154,4 +165,3 @@ class ProjectList extends React.Component {
 }
 
 export default withStyles(styles)(ProjectList);
-;
