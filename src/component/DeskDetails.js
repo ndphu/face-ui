@@ -42,25 +42,25 @@ const styles = theme => ({
     }
 });
 
-class Project extends React.Component {
-    state = {loading: false, project: null, openAddDeviceDialog: false, openAddRuleDialog: false};
+class DeskDetails extends React.Component {
+    state = {loading: false, desk: null, openAddDeviceDialog: false, openAddRuleDialog: false};
 
     componentDidMount = () => {
-        const projectId = this.props.match.params.projectId;
-        this.loadProject(projectId);
+        const deskId = this.props.match.params.deskId;
+        this.loadDesk(deskId);
         this.setState({
-            enableNotification: notificationService.getWatchingProjects().indexOf(projectId) >= 0,
+            enableNotification: notificationService.getWatchingDesks().indexOf(deskId) >= 0,
         })
     };
 
-    loadProject = (id) => {
+    loadDesk = (id) => {
         if (!id) {
-            id = this.props.match.params.projectId;
+            id = this.props.match.params.deskId;
         }
         const _this = this;
         this.setState({loading: true}, function () {
-            api.get(`/project/${id}`).then(resp => {
-                _this.setState({project: resp}, function () {
+            api.get(`/desk/${id}`).then(resp => {
+                _this.setState({desk: resp}, function () {
                     _this.loadDevices();
                     _this.loadRules();
                 })
@@ -72,13 +72,13 @@ class Project extends React.Component {
     };
 
     loadDevices = () => {
-        api.get(`/project/${this.props.match.params.projectId}/devices`).then(resp => {
+        api.get(`/desk/${this.props.match.params.deskId}/devices`).then(resp => {
             this.setState({devices: resp})
         });
     };
 
     loadRules = () => {
-        api.get(`/project/${this.props.match.params.projectId}/rules`).then(resp => {
+        api.get(`/desk/${this.props.match.params.deskId}/rules`).then(resp => {
             this.setState({rules: resp});
         });
     };
@@ -102,10 +102,10 @@ class Project extends React.Component {
         }
         const _this = this;
         this.setState({loading: true}, function () {
-            api.post(`/project/${_this.state.project.projectId}/devices`, {
+            api.post(`/desk/${_this.state.desk.deskId}/devices`, {
                 name: _this.state.newDeviceName
             }).then(resp => {
-                _this.setState({newDeviceName: "", openAddDeviceDialog: false}, _this.loadProject);
+                _this.setState({newDeviceName: "", openAddDeviceDialog: false}, _this.loadDesk);
             }).catch(() => {
                 _this.setState({loading: false, openAddDeviceDialog: false});
             })
@@ -123,7 +123,7 @@ class Project extends React.Component {
 
     handleAddRule = () => {
         const _this = this;
-        api.post(`/project/${this.state.project.projectId}/rules`, {
+        api.post(`/desk/${this.state.desk.deskId}/rules`, {
             deviceId: this.state.selectedDeviceId,
             interval: parseInt(this.state.interval),
             action: {
@@ -151,16 +151,16 @@ class Project extends React.Component {
         const _this = this;
         this.setState({enableNotification:  checked}, function () {
             if (checked) {
-                notificationService.startWatchingProject(_this.state.project.projectId)
+                notificationService.startWatchingDesk(_this.state.desk.deskId)
             } else {
-                notificationService.stopWatchingProject(_this.state.project.projectId)
+                notificationService.stopWatchingDesk(_this.state.desk.deskId)
             }
         });
     };
 
     render = () => {
         const {
-            loading, project, openAddDeviceDialog, openAddRuleDialog,
+            loading, desk, openAddDeviceDialog, openAddRuleDialog,
             notificationType, selectedDeviceId, devices, rules,
             enableNotification
         } = this.state;
@@ -169,21 +169,36 @@ class Project extends React.Component {
         return (
             <div>
                 {loading && <LinearProgress variant={"indeterminate"}/>}
-                {!loading && project &&
+                {!loading && desk &&
                 <div>
                     <AppBar position="static">
                         <Toolbar>
                             <Typography variant="h6" className={classes.title}>
-                                {project.name}
+                                {desk.name}
                             </Typography>
                         </Toolbar>
                     </AppBar>
                     <div className={classes.container}>
-                        <Paper className={classes.paper}>
+                      <Paper className={classes.paper}>
+                        <Typography variant={'h6'}
+                                    className={classes.label}
+                        >
+                          Devices
+                        </Typography>
+                        <DeviceList devices={devices}/>
+                        <Button color='primary'
+                                variant='contained'
+                                className={classes.button}
+                                onClick={this.handleAddDeviceClick}>
+                          Add Device
+                        </Button>
+                      </Paper>
+
+                      <Paper className={classes.paper}>
                             <Typography variant={'h6'}
                                         className={classes.label}
                             >
-                                Browser Notification
+                                Notification Settings
                             </Typography>
                             <FormGroup>
                                 <FormControlLabel
@@ -192,23 +207,10 @@ class Project extends React.Component {
                                 />
                             </FormGroup>
                         </Paper>
-                        <Paper className={classes.paper}>
-                            <Typography variant={'h6'}
-                                        className={classes.label}
-                            >
-                                Devices
-                            </Typography>
-                            <DeviceList devices={devices}/>
-                            <Button color='primary'
-                                    variant='contained'
-                                    className={classes.button}
-                                    onClick={this.handleAddDeviceClick}>
-                                Add Device
-                            </Button>
-                        </Paper>
+
                         <Dialog open={openAddDeviceDialog}
                                 fullWidth
-                                onClose={this.handleCloseAddProjectDialog}>
+                                onClose={this.handleCloseAddDeskDialog}>
                             <DialogTitle>Add New Device</DialogTitle>
                             <DialogContent>
                                 <TextField
@@ -275,8 +277,7 @@ class Project extends React.Component {
                                     autoWidth
                                     value={notificationType}
                                     onChange={this.handleNotificationTypeChange}>
-                                    <MenuItem value="BROWSER">Browser Notification</MenuItem>
-                                    <MenuItem value="MOBILE">Mobile Notification</MenuItem>
+                                    <MenuItem value="SLACK">Slack Notification</MenuItem>
                                 </Select>
                             </DialogContent>
                             <DialogActions>
@@ -298,4 +299,4 @@ class Project extends React.Component {
     }
 }
 
-export default withStyles(styles)(Project);
+export default withStyles(styles)(DeskDetails);

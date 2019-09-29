@@ -2,7 +2,7 @@ import Push from 'push.js';
 
 import apiConfig from '../api/Config';
 
-let storageKey = "monitoringProjects";
+let storageKey = "monitoringDesks";
 
 class NotificationService {
 
@@ -30,22 +30,22 @@ class NotificationService {
     };
 
 
-    startWatchingProject = (projectId) => {
+    startWatchingDesk = (deskId) => {
         let saved = localStorage.getItem(storageKey);
         if (saved) {
-            let projects = JSON.parse(saved);
-            if (projects.indexOf(projectId) < 0) {
-                projects.push(projectId);
-                localStorage.setItem(storageKey, JSON.stringify(projects));
+            let desks = JSON.parse(saved);
+            if (desks.indexOf(deskId) < 0) {
+                desks.push(deskId);
+                localStorage.setItem(storageKey, JSON.stringify(desks));
             }
         } else {
-            let devices = [projectId];
+            let devices = [deskId];
             localStorage.setItem(storageKey, JSON.stringify(devices));
         }
         this.wsSend({
             code: 200,
-            type: "WATCH_PROJECT",
-            payload: projectId,
+            type: "WATCH_DESK",
+            payload: deskId,
         })
     };
 
@@ -55,21 +55,21 @@ class NotificationService {
       }
     };
 
-    stopWatchingProject = (projectId) => {
+    stopWatchingDesk = (deskId) => {
         let saved = localStorage.getItem(storageKey);
         if (saved) {
-            let projects = JSON.parse(saved);
-            projects.splice(projects.indexOf(projectId), 1);
-            localStorage.setItem(storageKey, JSON.stringify(projects));
+            let desks = JSON.parse(saved);
+            desks.splice(desks.indexOf(deskId), 1);
+            localStorage.setItem(storageKey, JSON.stringify(desks));
         }
         this.wsSend({
             code: 200,
-            type: "UNWATCH_PROJECT",
-            payload: projectId,
+            type: "UNWATCH_DESK",
+            payload: deskId,
         })
     };
 
-    getWatchingProjects = () => {
+    getWatchingDesks = () => {
         let saved = localStorage.getItem(storageKey);
         if (saved) {
             return JSON.parse(saved);
@@ -82,12 +82,12 @@ class NotificationService {
             this.wsReady = true;
             let saved = localStorage.getItem(storageKey);
             if (saved) {
-                let projects = JSON.parse(saved);
-                for (let i = 0; i < projects.length; ++i) {
+                let desks = JSON.parse(saved);
+                for (let i = 0; i < desks.length; ++i) {
                     this.wsSend({
                         code: 200,
-                        type: "WATCH_PROJECT",
-                        payload: projects[i],
+                        type: "WATCH_DESK",
+                        payload: desks[i],
                     })
                 }
             }
@@ -105,7 +105,7 @@ class NotificationService {
                 break
             }
 
-            case "APP_NOTIFICATION_WATCH_PROJECT_SUCCESS": {
+            case "APP_NOTIFICATION_WATCH_DESK_SUCCESS": {
                 this.showNotification("Info", msg.payload, 1500, null, function () {
                     window.focus();
                     this.close();

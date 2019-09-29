@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
+    "firebase": "latest",
     "prop-types": "latest",
     "query-string": "latest",
     "react": "^16.9.0",
