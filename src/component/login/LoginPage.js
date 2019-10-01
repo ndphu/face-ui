@@ -30,8 +30,6 @@ const styles = theme => ({
 
 class LoginPage extends React.Component {
   state = {
-    email: "user1@mailinator.com",
-    password: "123456",
   };
 
   login = () => {

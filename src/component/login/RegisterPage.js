@@ -4,7 +4,6 @@ import TextField from '@material-ui/core/TextField/TextField';
 import Button from '@material-ui/core/Button/Button';
 import authService from '../../service/AuthService';
 import Grid from '@material-ui/core/Grid/Grid';
-import Hidden from '@material-ui/core/Hidden/Hidden';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {isValidEmail} from '../../utils/StringUtils';
@@ -62,7 +61,6 @@ class RegisterPage extends React.Component {
   render = () => {
     const {classes} = this.props;
     const {loading, error} = this.state;
-    console.log(loading);
 
     const registerForm = (
       <Paper className={classes.formContainer}>
@@ -103,7 +101,7 @@ class RegisterPage extends React.Component {
                 className={classes.formButton}
                 fullWidth
                 onClick={this.register}
-                disabled={this.invalidInput()}>
+                disabled={this.invalidInput() || loading}>
           Register
         </Button>
         {loading &&
@@ -114,7 +112,7 @@ class RegisterPage extends React.Component {
         <Typography color={"secondary"}
                     className={classes.progressBar}
         >
-          {error.err}
+          {error.error}
         </Typography>
         }
       </Paper>
