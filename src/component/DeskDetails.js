@@ -122,23 +122,6 @@ class DeskDetails extends React.Component {
         this.setState({openAddRuleDialog: false})
     };
 
-    handleAddRuleClick = () => {
-        this.setState({openAddRuleDialog: true})
-    };
-
-    handleAddRule = () => {
-        const _this = this;
-        api.post(`/desk/${this.state.desk.deskId}/rules`, {
-            deviceId: this.state.selectedDeviceId,
-            interval: parseInt(this.state.interval),
-            action: {
-                type: this.state.notificationType,
-            }
-        }).then(resp => {
-            _this.setState({openAddRuleDialog: false}, _this.loadRules)
-        })
-    };
-
     handleNotificationTypeChange = (event) => {
         this.setState({notificationType: event.target.value})
     };
@@ -167,11 +150,50 @@ class DeskDetails extends React.Component {
         });
     };
 
+    onRuleClick = (rule) => {
+        this.setState({openAddRuleDialog: true, ruleMode: 'edit', currentRule: rule,
+            selectedDeviceId: rule.deviceId, interval: rule.interval, notificationType: rule.action.type})
+    };
+
+
+    handleAddRuleClick = () => {
+        this.setState({openAddRuleDialog: true, currentRule: null, ruleMode: 'new', selectedDeviceId: null,
+            interval: null, notificationType: null})
+    };
+
+    handleAddRule = () => {
+        const _this = this;
+        api.post(`/desk/${this.state.desk.deskId}/rules`, {
+            deviceId: this.state.selectedDeviceId,
+            interval: parseInt(this.state.interval),
+            action: {
+                type: this.state.notificationType,
+            }
+        }).then(resp => {
+            _this.setState({openAddRuleDialog: false}, _this.loadRules)
+        })
+    };
+
+    handleEditRule = () => {
+        const _this = this;
+        api.post(`/rule/${this.state.currentRule.id}`, {
+            id: this.state.currentRule.id,
+            deskId: this.state.currentRule.deskId,
+            deviceId: this.state.selectedDeviceId,
+            interval: parseInt(this.state.interval),
+            action: {
+                type: this.state.notificationType,
+            }
+        }).then(resp => {
+            _this.setState({openAddRuleDialog: false}, _this.loadRules)
+        })
+    };
+
     render = () => {
         const {
             loading, desk, openAddDeviceDialog, openAddRuleDialog,
             notificationType, selectedDeviceId, newDeviceType, devices, rules,
-            enableNotification
+            enableNotification, ruleMode, interval
         } = this.state;
         const {classes} = this.props;
 
@@ -255,7 +277,7 @@ class DeskDetails extends React.Component {
                             >
                                 Notification Rules
                             </Typography>
-                            <RuleList rules={rules}/>
+                            <RuleList rules={rules} onRuleClick={this.onRuleClick}/>
                             <Button color='primary'
                                     variant='contained'
                                     className={classes.button}
@@ -266,7 +288,7 @@ class DeskDetails extends React.Component {
                         <Dialog open={openAddRuleDialog}
                                 fullWidth
                                 onClose={this.handleCloseAddRuleDialog}>
-                            <DialogTitle>Add New Rule</DialogTitle>
+                            <DialogTitle>{ruleMode === 'edit' ? 'Edit Rule' : 'Add New Rule'}</DialogTitle>
                             <DialogContent>
                                 <Typography variant={"body1"}>On Device</Typography>
                                 <Select
@@ -286,6 +308,7 @@ class DeskDetails extends React.Component {
                                     type="number"
                                     margin="dense"
                                     label="Minutes"
+                                    value={interval}
                                 />
                                 <div className={classes.divider}/>
                                 <Typography variant={"body1"}>Via</Typography>
@@ -301,10 +324,10 @@ class DeskDetails extends React.Component {
                                 <Button onClick={this.handleCloseAddRuleDialog} color="primary">
                                     Cancel
                                 </Button>
-                                <Button onClick={this.handleAddRule}
+                                <Button onClick={ruleMode === 'new' ? this.handleAddRule : this.handleEditRule}
                                         color="primary"
                                 >
-                                    Add
+                                    Save
                                 </Button>
                             </DialogActions>
                         </Dialog>

@@ -15,7 +15,7 @@ const styles = theme => ({});
 
 class RuleList extends React.Component {
     render = () => {
-        const {rules} = this.props;
+        const {rules, onRuleClick} = this.props;
         return (
             <div>
                 <Table>
@@ -29,7 +29,11 @@ class RuleList extends React.Component {
                     <TableBody>
                         {rules && rules.map(rule => {
                             return (
-                                <TableRow key={`list-item-rule-${rule.id}`}>
+                                <TableRow key={`list-item-rule-${rule.id}`}
+                                          hover
+                                          onClick={() => {
+                                              if (onRuleClick) onRuleClick(rule)
+                                          }}>
                                     <TableCell>{rule.action.type}</TableCell>
                                     <TableCell>{rule.interval}</TableCell>
                                     <TableCell>{rule.deviceId}</TableCell>

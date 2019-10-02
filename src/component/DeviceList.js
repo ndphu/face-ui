@@ -34,7 +34,9 @@ class DeviceList extends React.Component {
                     <TableBody>
                         {devices.map(d => {
                             return (
-                                <TableRow key={`list-item-rule-${d.id}`} onClick={() => {navigationService.goToDevice(d)}}>
+                                <TableRow hover
+                                          key={`list-item-rule-${d.id}`}
+                                          onClick={() => {navigationService.goToDevice(d)}}>
                                     <TableCell>{d.name}</TableCell>
                                     <TableCell>{d.type}</TableCell>
                                     <TableCell>{d.deviceId}</TableCell>
