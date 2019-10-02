@@ -96,14 +96,19 @@ class DeskDetails extends React.Component {
     };
 
     handleAddDevice = () => {
-        if (!this.state.newDeviceName) {
-            alert("invalid device name");
+        if (!this.state.newDeviceName || this.state.newDeviceName.trim().length === 0) {
+            alert("Device device name should be define");
+            return
+        }
+        if (!this.state.newDeviceType) {
+            alert("Device type should be define");
             return
         }
         const _this = this;
         this.setState({loading: true}, function () {
             api.post(`/desk/${_this.state.desk.deskId}/devices`, {
-                name: _this.state.newDeviceName
+                name: _this.state.newDeviceName,
+                type: _this.state.newDeviceType,
             }).then(resp => {
                 _this.setState({newDeviceName: "", openAddDeviceDialog: false}, _this.loadDesk);
             }).catch(() => {
@@ -146,10 +151,14 @@ class DeskDetails extends React.Component {
         this.setState({selectedDeviceId: event.target.value})
     };
 
+    handleDeviceTypeChange = (event) => {
+        this.setState({newDeviceType: event.target.value})
+    };
+
     toggleNotification = (event) => {
         let checked = event.target.checked;
         const _this = this;
-        this.setState({enableNotification:  checked}, function () {
+        this.setState({enableNotification: checked}, function () {
             if (checked) {
                 notificationService.startWatchingDesk(_this.state.desk.deskId)
             } else {
@@ -161,7 +170,7 @@ class DeskDetails extends React.Component {
     render = () => {
         const {
             loading, desk, openAddDeviceDialog, openAddRuleDialog,
-            notificationType, selectedDeviceId, devices, rules,
+            notificationType, selectedDeviceId, newDeviceType, devices, rules,
             enableNotification
         } = this.state;
         const {classes} = this.props;
@@ -171,30 +180,29 @@ class DeskDetails extends React.Component {
                 {loading && <LinearProgress variant={"indeterminate"}/>}
                 {!loading && desk &&
                 <div>
-                    <AppBar position="static">
-                        <Toolbar>
-                            <Typography variant="h6" className={classes.title}>
-                                {desk.name}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
                     <div className={classes.container}>
-                      <Paper className={classes.paper}>
-                        <Typography variant={'h6'}
-                                    className={classes.label}
+                        <Typography variant={'h4'}
+                                    color={'primary'}
                         >
-                          Devices
+                            {desk.name}
                         </Typography>
-                        <DeviceList devices={devices}/>
-                        <Button color='primary'
-                                variant='contained'
-                                className={classes.button}
-                                onClick={this.handleAddDeviceClick}>
-                          Add Device
-                        </Button>
-                      </Paper>
 
-                      <Paper className={classes.paper}>
+                        <Paper className={classes.paper}>
+                            <Typography variant={'h6'}
+                                        className={classes.label}
+                            >
+                                Devices
+                            </Typography>
+                            <DeviceList devices={devices}/>
+                            <Button color='primary'
+                                    variant='contained'
+                                    className={classes.button}
+                                    onClick={this.handleAddDeviceClick}>
+                                Add Device
+                            </Button>
+                        </Paper>
+
+                        <Paper className={classes.paper}>
                             <Typography variant={'h6'}
                                         className={classes.label}
                             >
@@ -202,7 +210,7 @@ class DeskDetails extends React.Component {
                             </Typography>
                             <FormGroup>
                                 <FormControlLabel
-                                    control={<Switch checked={enableNotification} onChange={this.toggleNotification} />}
+                                    control={<Switch checked={enableNotification} onChange={this.toggleNotification}/>}
                                     label={enableNotification ? "Enabled" : "Disabled"}
                                 />
                             </FormGroup>
@@ -213,13 +221,21 @@ class DeskDetails extends React.Component {
                                 onClose={this.handleCloseAddDeskDialog}>
                             <DialogTitle>Add New Device</DialogTitle>
                             <DialogContent>
+                                <Typography variant={"body1"}>Device Name</Typography>
                                 <TextField
                                     onChange={this.onTextChange}
                                     autoFocus
                                     margin="dense"
-                                    label="Device Name"
                                     fullWidth
                                 />
+                                <div className={classes.divider}/>
+                                <Typography variant={"body1"}>Device Type</Typography>
+                                <Select
+                                    value={newDeviceType}
+                                    onChange={this.handleDeviceTypeChange}>
+                                    <MenuItem value="CAMERA">Camera</MenuItem>
+                                    <MenuItem value="WATER_MONITOR">Water Monitor</MenuItem>
+                                </Select>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseAddDeviceDialog} color="primary">
@@ -257,7 +273,8 @@ class DeskDetails extends React.Component {
                                     value={selectedDeviceId}
                                     onChange={this.handleSelectedDeviceChange}>
                                     {devices && devices.map(d => {
-                                        return <MenuItem key={`menu-item-device-${d.id}`} value={d.deviceId}>{d.name}</MenuItem>
+                                        return <MenuItem key={`menu-item-device-${d.id}`}
+                                                         value={d.deviceId}>{d.name}</MenuItem>
                                     })
                                     }
                                 </Select>

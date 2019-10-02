@@ -46,13 +46,6 @@ class DeviceDetails extends React.Component {
 
         return (
             <div>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" className={classes.title}>
-                            {device ? `Device: ${device.name}` : ''}
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
                 <div className={classes.container}>
                     {device &&
                     <div>

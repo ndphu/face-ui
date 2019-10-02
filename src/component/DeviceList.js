@@ -1,8 +1,5 @@
 import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import List from '@material-ui/core/List/List';
-import ListItem from '@material-ui/core/ListItem/ListItem';
-import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import navigationService from '../service/NavigationService';
 import Table from "@material-ui/core/Table/Table";
 import TableHead from "@material-ui/core/TableHead/TableHead";
@@ -30,6 +27,7 @@ class DeviceList extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell>Device Name</TableCell>
+                            <TableCell>Device Type</TableCell>
                             <TableCell>Device Id</TableCell>
                         </TableRow>
                     </TableHead>
@@ -38,6 +36,7 @@ class DeviceList extends React.Component {
                             return (
                                 <TableRow key={`list-item-rule-${d.id}`} onClick={() => {navigationService.goToDevice(d)}}>
                                     <TableCell>{d.name}</TableCell>
+                                    <TableCell>{d.type}</TableCell>
                                     <TableCell>{d.deviceId}</TableCell>
                                 </TableRow>
                             )

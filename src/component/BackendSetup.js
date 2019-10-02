@@ -21,10 +21,6 @@ const styles = (theme) => ({
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(2),
   },
-  title: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  }
 });
 
 class BackendSetup extends React.Component {
@@ -56,13 +52,6 @@ class BackendSetup extends React.Component {
 
     return (
       <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Configure Backend API URLs
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <Paper className={classes.paper}>
           <form className={classes.container} noValidate autoComplete="off">
             <Typography variant="body1" className={classes.title}>

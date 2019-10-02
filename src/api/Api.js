@@ -80,6 +80,16 @@ class Api {
         localStorage.setItem("jwt.token", token);
     };
 
+    clearToken = () => {
+        this.token = null;
+        localStorage.removeItem("jwt.token");
+    };
+
+    getToken = () => {
+        this.token = localStorage.getItem("jwt.token");
+        return this.token;
+    };
+
     postForm(path, formData) {
         const input = config.baseUrl + path;
         const headers = {};

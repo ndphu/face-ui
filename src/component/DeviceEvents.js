@@ -30,7 +30,7 @@ class DeviceEvents extends React.Component {
                 <TableRow key={`list-item-event-${event.id}`}>
                   <TableCell>{event.type}</TableCell>
                   <TableCell>{event.timestamp}</TableCell>
-                  <TableCell>{event.labels.indexOf(device.deskId) >= 0 ? 'PRESENT' : 'MISSING'}</TableCell>
+                  <TableCell>{event.result}</TableCell>
                   <TableCell>{event.error}</TableCell>
                 </TableRow>
               )

@@ -38,6 +38,10 @@ class NavigationService {
     goToErrorPage = () => {
         this.history.push(`/error`);
     };
+
+    goToHome = () => {
+        this.history.push(`/home`);
+    }
 }
 
 const navigationService = new NavigationService();

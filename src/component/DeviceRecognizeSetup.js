@@ -139,17 +139,10 @@ class DeviceRecognizeSetup extends React.Component {
     const {device, mode, recognizedResult} = this.state;
     return (
       <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              {device ? `Device: ${device.name}` : ''}
-            </Typography>
-          </Toolbar>
-        </AppBar>
         {device &&
         <div className={classes.container}>
           <img width={640} height={480}
-               src={`${config.baseUrl}/device/${this.state.deviceId}/capture/live`}/>
+               src={`${config.baseUrl}/device/${this.state.deviceId}/capture/live?accessToken=${api.getToken()}`}/>
           {!recognizedResult &&
           <div>
             {mode === 'normal' &&

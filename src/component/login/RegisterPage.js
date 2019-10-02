@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {isValidEmail} from '../../utils/StringUtils';
-import Paper from "@material-ui/core/Paper/Paper";
+import Paper from "@material-ui/core/Paper";
 import navigationService from '../../service/NavigationService';
 
 const styles = theme => ({

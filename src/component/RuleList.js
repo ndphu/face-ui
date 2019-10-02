@@ -24,7 +24,6 @@ class RuleList extends React.Component {
                             <TableCell>Action Type</TableCell>
                             <TableCell>Interval (minutes)</TableCell>
                             <TableCell>Device Id</TableCell>
-                            <TableCell>Label</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -34,7 +33,6 @@ class RuleList extends React.Component {
                                     <TableCell>{rule.action.type}</TableCell>
                                     <TableCell>{rule.interval}</TableCell>
                                     <TableCell>{rule.deviceId}</TableCell>
-                                    <TableCell>{rule.label}</TableCell>
                                 </TableRow>
                             )
                         })}
