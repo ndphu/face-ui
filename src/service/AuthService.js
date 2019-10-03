@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth'
 import api from '../api/Api';
 import config from '../api/Config';
+import notificationService from "./NotificationService";
 
 
 class AuthService {
@@ -25,6 +26,7 @@ class AuthService {
                             api.setToken(resp.jwtToken);
                             this.user = resp.user;
                             resolve(this.user);
+                            notificationService.initWebSocket();
                         }).catch(err => {
                             reject(err);
                         });

@@ -118,28 +118,33 @@ class NotificationService {
                 console.log("Unknown message", msg)
             }
         }
-
     };
+
+
+    initWebSocket = () => {
+        const _this = this;
+        if (this.ws) {
+            this.ws.close();
+        }
+        this.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
+        this.ws.onopen = this.onSocketOpen;
+        this.ws.onmessage = this.onSocketMessage;
+        this.ws.onerror = function(e) {
+            console.log("Websocket error.", e);
+        };
+
+        this.ws.onclose = function (e) {
+            console.log("Websocket connect lost. Reconnect in 5 seconds.", e.reason);
+            this.wsReady = false;
+            setTimeout(function () {
+                _this.initWebSocket();
+            }, 5000);
+        };
+    }
 }
 
 const notificationService = new NotificationService();
 
-function initWebSocket() {
-    notificationService.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
-    notificationService.ws.onopen = notificationService.onSocketOpen;
-    notificationService.ws.onmessage = notificationService.onSocketMessage;
-    notificationService.ws.onerror = function(e) {
-        console.log("Websocket error.", e);
-    };
-    notificationService.ws.onclose = function (e) {
-        console.log("Websocket connect lost. Reconnect in 5 seconds.", e.reason);
-        notificationService.wsReady = false;
-        setTimeout(function () {
-            initWebSocket();
-        }, 5000);
-    };
-}
-
-initWebSocket();
+notificationService.initWebSocket();
 
 export default notificationService;
