@@ -1,6 +1,7 @@
 import Push from 'push.js';
 
 import apiConfig from '../api/Config';
+import api from '../api/Api';
 
 let storageKey = "monitoringDesks";
 
@@ -124,7 +125,7 @@ class NotificationService {
 const notificationService = new NotificationService();
 
 function initWebSocket() {
-    notificationService.ws = new WebSocket(apiConfig.wsUrl);
+    notificationService.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
     notificationService.ws.onopen = notificationService.onSocketOpen;
     notificationService.ws.onmessage = notificationService.onSocketMessage;
     notificationService.ws.onerror = function(e) {

@@ -25,6 +25,8 @@ class AuthService {
                             api.setToken(resp.jwtToken);
                             this.user = resp.user;
                             resolve(this.user);
+                        }).catch(err => {
+                            reject(err);
                         });
                     }
                 );

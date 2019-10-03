@@ -31,6 +31,7 @@ const styles = (theme) => ({
     },
     button: {
         marginTop: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,
     }
 });
 
@@ -70,7 +71,16 @@ class ErrorPage extends React.Component {
                                 onClick={() => {
                                     navigationService.goToDesks();
                                     window.location.reload();
-                                }}>Reload</Button>
+                                }}>
+                            Reload
+                        </Button>
+                        <Button className={classes.button}
+                                variant='outlined'
+                                onClick={() => {
+                                    navigationService.goToConfig();
+                                }}>
+                            Configure Backend
+                        </Button>
                     </GridListTile>
                 </GridList>
             </Paper>
