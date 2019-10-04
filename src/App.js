@@ -80,7 +80,7 @@ class App extends React.Component {
             <div className="App">
                 <CssBaseline/>
                 <AppBar position="static">
-                    <Toolbar>
+                    <Toolbar variant="dense">
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"

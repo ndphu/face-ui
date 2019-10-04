@@ -127,7 +127,7 @@ class DeskDetails extends React.Component {
     };
 
     onIntervalChange = (event) => {
-        this.setState({interval: event.target.value});
+        this.setState({intervalMinutes: event.target.value});
     };
 
     handleSelectedDeviceChange = (event) => {
@@ -152,7 +152,7 @@ class DeskDetails extends React.Component {
 
     onRuleClick = (rule) => {
         this.setState({openAddRuleDialog: true, ruleMode: 'edit', currentRule: rule,
-            selectedDeviceId: rule.deviceId, interval: rule.interval, notificationType: rule.action.type})
+            intervalMinutes: rule.intervalMinutes})
     };
 
 
@@ -178,12 +178,10 @@ class DeskDetails extends React.Component {
         const _this = this;
         api.post(`/rule/${this.state.currentRule.id}`, {
             id: this.state.currentRule.id,
+            type: this.state.currentRule.type,
             deskId: this.state.currentRule.deskId,
-            deviceId: this.state.selectedDeviceId,
-            interval: parseInt(this.state.interval),
-            action: {
-                type: this.state.notificationType,
-            }
+            userId: this.state.currentRule.userId,
+            intervalMinutes: parseInt(this.state.intervalMinutes),
         }).then(resp => {
             _this.setState({openAddRuleDialog: false}, _this.loadRules)
         })
@@ -193,7 +191,7 @@ class DeskDetails extends React.Component {
         const {
             loading, desk, openAddDeviceDialog, openAddRuleDialog,
             notificationType, selectedDeviceId, newDeviceType, devices, rules,
-            enableNotification, ruleMode, interval
+            enableNotification, ruleMode, intervalMinutes
         } = this.state;
         const {classes} = this.props;
 
@@ -278,29 +276,18 @@ class DeskDetails extends React.Component {
                                 Notification Rules
                             </Typography>
                             <RuleList rules={rules} onRuleClick={this.onRuleClick}/>
-                            <Button color='primary'
-                                    variant='contained'
-                                    className={classes.button}
-                                    onClick={this.handleAddRuleClick}>
-                                Add Rule
-                            </Button>
+                            {/*<Button color='primary'*/}
+                                    {/*variant='contained'*/}
+                                    {/*className={classes.button}*/}
+                                    {/*onClick={this.handleAddRuleClick}>*/}
+                                {/*Add Rule*/}
+                            {/*</Button>*/}
                         </Paper>
                         <Dialog open={openAddRuleDialog}
                                 fullWidth
                                 onClose={this.handleCloseAddRuleDialog}>
                             <DialogTitle>{ruleMode === 'edit' ? 'Edit Rule' : 'Add New Rule'}</DialogTitle>
                             <DialogContent>
-                                <Typography variant={"body1"}>On Device</Typography>
-                                <Select
-                                    value={selectedDeviceId}
-                                    onChange={this.handleSelectedDeviceChange}>
-                                    {devices && devices.map(d => {
-                                        return <MenuItem key={`menu-item-device-${d.id}`}
-                                                         value={d.deviceId}>{d.name}</MenuItem>
-                                    })
-                                    }
-                                </Select>
-                                <div className={classes.divider}/>
                                 <Typography variant={"body1"}>Notify me after</Typography>
                                 <TextField
                                     onChange={this.onIntervalChange}
@@ -308,17 +295,8 @@ class DeskDetails extends React.Component {
                                     type="number"
                                     margin="dense"
                                     label="Minutes"
-                                    value={interval}
+                                    value={intervalMinutes}
                                 />
-                                <div className={classes.divider}/>
-                                <Typography variant={"body1"}>Via</Typography>
-                                <Select
-                                    variant={"filled"}
-                                    autoWidth
-                                    value={notificationType}
-                                    onChange={this.handleNotificationTypeChange}>
-                                    <MenuItem value="SLACK">Slack Notification</MenuItem>
-                                </Select>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseAddRuleDialog} color="primary">

@@ -21,9 +21,8 @@ class RuleList extends React.Component {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Action Type</TableCell>
+                            <TableCell>Type</TableCell>
                             <TableCell>Interval (minutes)</TableCell>
-                            <TableCell>Device Id</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -34,9 +33,8 @@ class RuleList extends React.Component {
                                           onClick={() => {
                                               if (onRuleClick) onRuleClick(rule)
                                           }}>
-                                    <TableCell>{rule.action.type}</TableCell>
-                                    <TableCell>{rule.interval}</TableCell>
-                                    <TableCell>{rule.deviceId}</TableCell>
+                                    <TableCell>{rule.type}</TableCell>
+                                    <TableCell>{rule.intervalMinutes}</TableCell>
                                 </TableRow>
                             )
                         })}
