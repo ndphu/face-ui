@@ -6,6 +6,8 @@ import TableHead from "@material-ui/core/TableHead/TableHead";
 import TableRow from "@material-ui/core/TableRow/TableRow";
 import TableCell from "@material-ui/core/TableCell/TableCell";
 import TableBody from "@material-ui/core/TableBody/TableBody";
+import CameraAlt from '@material-ui/icons/CameraAltOutlined';
+import DeveloperBoard from '@material-ui/icons/DeveloperBoardOutlined';
 
 const styles = theme => ({});
 
@@ -26,6 +28,7 @@ class DeviceList extends React.Component {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell/>
                             <TableCell>Device Name</TableCell>
                             <TableCell>Device Type</TableCell>
                             <TableCell>Device Id</TableCell>
@@ -36,7 +39,10 @@ class DeviceList extends React.Component {
                             return (
                                 <TableRow hover
                                           key={`list-item-rule-${d.id}`}
-                                          onClick={() => {navigationService.goToDevice(d)}}>
+                                          onClick={() => {
+                                              navigationService.goToDevice(d)
+                                          }}>
+                                    <TableCell>{d.type === 'CAMERA' ? <CameraAlt/> : <DeveloperBoard/>}</TableCell>
                                     <TableCell>{d.name}</TableCell>
                                     <TableCell>{d.type}</TableCell>
                                     <TableCell>{d.deviceId}</TableCell>

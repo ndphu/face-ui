@@ -231,19 +231,19 @@ class DeskDetails extends React.Component {
                             </Button>
                         </Paper>
 
-                        <Paper className={classes.paper}>
-                            <Typography variant={'h6'}
-                                        className={classes.label}
-                            >
-                                Notification Settings
-                            </Typography>
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={<Switch checked={enableNotification} onChange={this.toggleNotification}/>}
-                                    label={enableNotification ? "Enabled" : "Disabled"}
-                                />
-                            </FormGroup>
-                        </Paper>
+                        {/*<Paper className={classes.paper}>*/}
+                            {/*<Typography variant={'h6'}*/}
+                                        {/*className={classes.label}*/}
+                            {/*>*/}
+                                {/*Notification Settings*/}
+                            {/*</Typography>*/}
+                            {/*<FormGroup>*/}
+                                {/*<FormControlLabel*/}
+                                    {/*control={<Switch checked={enableNotification} onChange={this.toggleNotification}/>}*/}
+                                    {/*label={enableNotification ? "Enabled" : "Disabled"}*/}
+                                {/*/>*/}
+                            {/*</FormGroup>*/}
+                        {/*</Paper>*/}
 
                         <Dialog open={openAddDeviceDialog}
                                 fullWidth

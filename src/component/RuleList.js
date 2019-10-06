@@ -8,19 +8,26 @@ import TableHead from "@material-ui/core/TableHead/TableHead";
 import TableRow from "@material-ui/core/TableRow/TableRow";
 import TableCell from "@material-ui/core/TableCell/TableCell";
 import TableBody from "@material-ui/core/TableBody/TableBody";
+import SitReminderRuleIcon from "@material-ui/icons/TransferWithinAStationOutlined";
+import WaterReminderRuleIcon from "@material-ui/icons/OpacityOutlined";
 
 
-const styles = theme => ({});
+const styles = theme => ({
+    iconCell: {
+        maxWidth: 120
+    }
+});
 
 
 class RuleList extends React.Component {
     render = () => {
-        const {rules, onRuleClick} = this.props;
+        const {rules, onRuleClick, classes} = this.props;
         return (
             <div>
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell className={classes.iconCell}/>
                             <TableCell>Type</TableCell>
                             <TableCell>Interval (minutes)</TableCell>
                         </TableRow>
@@ -33,6 +40,8 @@ class RuleList extends React.Component {
                                           onClick={() => {
                                               if (onRuleClick) onRuleClick(rule)
                                           }}>
+                                    <TableCell className={classes.iconCell}>{rule.type === 'SITTING_MONITORING' ? <SitReminderRuleIcon/> :
+                                        <WaterReminderRuleIcon/>} </TableCell>
                                     <TableCell>{rule.type}</TableCell>
                                     <TableCell>{rule.intervalMinutes}</TableCell>
                                 </TableRow>

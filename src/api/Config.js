@@ -1,5 +1,6 @@
 class ApiConfig {
-    // baseUrl = 'https://swdcore-01.ddns.negit pui/ws';
+    // baseUrl = 'https://swdcore-01.ddns.net/api';
+    // wsUrl = 'wss://swdcore-01.ddns.net/api/ws';
 
     baseUrl = 'http://localhost:8080/api';
     wsUrl = 'ws://localhost:8080/api/ws';
