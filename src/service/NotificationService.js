@@ -124,25 +124,25 @@ class NotificationService {
 
 
     initWebSocket = () => {
-        const _this = this;
-        if (this.ws) {
-            this.ws.close();
-        }
-        console.log('initWebSocket');
-        this.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
-        this.ws.onopen = this.onSocketOpen;
-        this.ws.onmessage = this.onSocketMessage;
-        this.ws.onerror = function(e) {
-            console.log("Websocket error.", e);
-        };
-
-        this.ws.onclose = function (e) {
-            console.log("Websocket connect lost. Reconnect in 5 seconds.", e.reason);
-            this.wsReady = false;
-            setTimeout(function () {
-                _this.initWebSocket();
-            }, 5000);
-        };
+        // const _this = this;
+        // if (this.ws) {
+        //     this.ws.close();
+        // }
+        // console.log('initWebSocket');
+        // this.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
+        // this.ws.onopen = this.onSocketOpen;
+        // this.ws.onmessage = this.onSocketMessage;
+        // this.ws.onerror = function(e) {
+        //     console.log("Websocket error.", e);
+        // };
+        //
+        // this.ws.onclose = function (e) {
+        //     console.log("Websocket connect lost. Reconnect in 5 seconds.", e.reason);
+        //     this.wsReady = false;
+        //     setTimeout(function () {
+        //         _this.initWebSocket();
+        //     }, 5000);
+        // };
     }
 }
 

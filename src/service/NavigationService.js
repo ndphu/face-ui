@@ -16,11 +16,11 @@ class NavigationService {
     };
 
     goToDevice = (device) => {
-        this.history.push(`/device/${device.deviceId}`)
+        this.history.push(`/device/${device.id}`)
     };
 
     goToDeviceRecognizeSetup = (device) => {
-        this.history.push(`/device/${device.deviceId}/recognizeSetup`)
+        this.history.push(`/device/${device.id}/recognizeSetup`)
     };
 
     goToConfig = () => {

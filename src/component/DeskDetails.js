@@ -84,7 +84,9 @@ class DeskDetails extends React.Component {
     onTextChange = (event) => {
         this.setState({newDeviceName: event.target.value});
     };
-
+    onDeviceSerialChange = (event) => {
+        this.setState({newDeviceSerial: event.target.value});
+    };
     handleAddDeviceClick = () => {
         this.setState({openAddDeviceDialog: true});
     };
@@ -94,19 +96,28 @@ class DeskDetails extends React.Component {
     };
 
     handleAddDevice = () => {
-        if (!this.state.newDeviceName || this.state.newDeviceName.trim().length === 0) {
-            alert("Device device name should be define");
-            return
-        }
+
         if (!this.state.newDeviceType) {
             alert("Device type should be define");
             return
         }
+
+        if (this.state.newDeviceType === 'CAMERA' && (!this.state.newDeviceName || this.state.newDeviceName.trim().length === 0)) {
+            alert("Device device name should be define");
+            return
+        }
+
+        if (this.state.newDeviceType === 'WATER_MONITOR' && (!this.state.newDeviceSerial || this.state.newDeviceSerial.trim().length === 0)) {
+            alert("Device serial name should be define");
+            return
+        }
+
         const _this = this;
         this.setState({loading: true}, function () {
             api.post(`/desk/${_this.state.desk.deskId}/devices`, {
-                name: _this.state.newDeviceName,
+                name: _this.state.newDeviceName ? _this.state.newDeviceName : "Water Monitor Device",
                 type: _this.state.newDeviceType,
+                deviceId: _this.state.newDeviceSerial,
             }).then(resp => {
                 _this.setState({newDeviceName: "", openAddDeviceDialog: false}, _this.loadDesk);
             }).catch(() => {
@@ -239,14 +250,7 @@ class DeskDetails extends React.Component {
                                 onClose={this.handleCloseAddDeskDialog}>
                             <DialogTitle>Add New Device</DialogTitle>
                             <DialogContent>
-                                <Typography variant={"body1"}>Device Name</Typography>
-                                <TextField
-                                    onChange={this.onTextChange}
-                                    autoFocus
-                                    margin="dense"
-                                    fullWidth
-                                />
-                                <div className={classes.divider}/>
+
                                 <Typography variant={"body1"}>Device Type</Typography>
                                 <Select
                                     value={newDeviceType}
@@ -254,6 +258,30 @@ class DeskDetails extends React.Component {
                                     <MenuItem value="CAMERA">Camera</MenuItem>
                                     <MenuItem value="WATER_MONITOR">Water Monitor</MenuItem>
                                 </Select>
+
+                                <div className={classes.divider}/>
+                                {newDeviceType === 'CAMERA' &&
+                                    <div>
+                                        <Typography variant={"body1"}>Device Name</Typography>
+                                        <TextField
+                                            onChange={this.onTextChange}
+                                            autoFocus
+                                            margin="dense"
+                                            fullWidth
+                                        />
+                                    </div>
+                                }
+                                {newDeviceType === 'WATER_MONITOR' &&
+                                <div>
+                                    <Typography variant={"body1"}>Device Serial</Typography>
+                                    <TextField
+                                        onChange={this.onDeviceSerialChange}
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                    />
+                                </div>
+                                }
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseAddDeviceDialog} color="primary">

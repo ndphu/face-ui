@@ -29,23 +29,33 @@ class DeviceDetails extends React.Component {
     };
 
     loadDevice = () => {
+        const _this = this;
         api.get(`/device/${this.props.match.params.deviceId}`).then(resp => {
             this.setState({device: resp})
         }).catch(err => {
             console.log("Error", err);
         });
 
-        api.get(`/device/${this.props.match.params.deviceId}/events`).then(resp => {
-            this.setState({events: resp})
-        });
+        this.eventUpdateInterval = setInterval(function () {
+            api.get(`/device/${_this.props.match.params.deviceId}/events`).then(resp => {
+                _this.setState({events: resp})
+            });
+        }, 500);
+
     };
 
+    componentWillUnmount = () => {
+        if (this.eventUpdateInterval) {
+            clearInterval(this.eventUpdateInterval);
+        }
+    }
+
     handleRemoveDeviceClick = () => {
-      if (window.confirm(`Delete device ${this.state.device.name}?`)) {
-          api.delete(`/device/${this.props.match.params.deviceId}`).then(resp => {
-            navigationService.goToDesk(this.state.device.deskId);
-          });
-      }
+        if (window.confirm(`Delete device ${this.state.device.name}?`)) {
+            api.delete(`/device/${this.props.match.params.deviceId}`).then(resp => {
+                navigationService.goToDesk(this.state.device.deskId);
+            });
+        }
     };
 
     render = () => {
@@ -59,6 +69,7 @@ class DeviceDetails extends React.Component {
                     <div>
                         <Paper className={classes.paper}>
                             <Typography variant={'h5'}>Device ID: {device.deviceId}</Typography>
+                            {device.type === 'CAMERA' &&
                             <Button variant={'contained'}
                                     color={'primary'}
                                     className={classes.button}
@@ -68,7 +79,7 @@ class DeviceDetails extends React.Component {
                             >
                                 Setup Face Recognition
                             </Button>
-
+                            }
                             <Button variant={'outlined'}
                                     color={'secondary'}
                                     className={classes.button}

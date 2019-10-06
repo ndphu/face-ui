@@ -55,7 +55,7 @@ class DeviceRecognizeSetup extends React.Component {
   };
 
   startRecognizing = () => {
-    api.get(`/device/${this.state.device.deviceId}/startRecognize?frameDelay=${this.delay}&totalPics=${this.numberOfFrame}`)
+    api.get(`/device/${this.state.device.id}/startRecognize?frameDelay=${this.delay}&totalPics=${this.numberOfFrame}`)
       .then(resp => {
         this.setState({recognizedResult: resp, mode: 'normal'})
       }).catch(() => {
@@ -142,7 +142,7 @@ class DeviceRecognizeSetup extends React.Component {
         {device &&
         <div className={classes.container}>
           <img width={640} height={480}
-               src={`${config.baseUrl}/device/${this.state.deviceId}/capture/live?accessToken=${api.getToken()}`}/>
+               src={`${config.baseUrl}/device/${this.state.device.id}/capture/live?accessToken=${api.getToken()}`}/>
           {!recognizedResult &&
           <div>
             {mode === 'normal' &&
