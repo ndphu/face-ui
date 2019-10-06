@@ -45,7 +45,7 @@ class SlackConfig extends React.Component {
     };
 
     testSlackNotification = () => {
-        this.setState({loading: true},function () {
+        this.setState({loading: true}, function () {
             api.get("/notification/testSlackNotification").then(resp => {
                 this.setState({loading: false});
             }).catch((error) => {
@@ -65,6 +65,7 @@ class SlackConfig extends React.Component {
         const {slackConfig, loading} = this.state;
         return (
             <div className={classes.container}>
+                {slackConfig &&
                 <Paper className={classes.paper}>
                     <Typography variant={'h6'}
                                 className={classes.label}
@@ -106,6 +107,7 @@ class SlackConfig extends React.Component {
                     )}
 
                 </Paper>
+                }
             </div>
         )
     }

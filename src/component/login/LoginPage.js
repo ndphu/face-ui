@@ -96,7 +96,7 @@ class LoginPage extends React.Component {
                             onClick={this.login}
                             className={classes.button}
                             fullWidth
-                            disabled={this.invalidInput()}>
+                            disabled={this.invalidInput() || loading}>
                         Login
                     </Button>
                     <Button variant={'outlined'}

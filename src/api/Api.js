@@ -47,6 +47,38 @@ class Api {
         });
     };
 
+    delete = (path) => {
+        let fetchUrl = config.baseUrl + path;
+        return fetch(fetchUrl, {
+            method: 'DELETE',
+            headers: this.buildHeaders()
+        }).then(resp => {
+            if (resp.status === 401) {
+                navigationService.goToLoginPage();
+                return Promise.reject();
+            }
+            if (resp.status === 404) {
+                return Promise.reject();
+            } else if (resp.status >= 500) {
+                return Promise.reject(resp);
+            }
+            return resp.json();
+        }).catch((resp) => {
+            if (!resp) {
+                return Promise.reject();
+            }
+            if (resp.message === 'Failed to fetch') {
+                localStorage.setItem("lastError", JSON.stringify({
+                    error: 'FETCH_ERROR',
+                    message: resp.message,
+                    url: fetchUrl,
+                }));
+                navigationService.goToErrorPage();
+            }
+            return Promise.reject();
+        });
+    };
+
     post = (path, body, raw) => {
         let input = path.startsWith("http") ? path : config.baseUrl + path;
         return new Promise((resolve, reject) => {

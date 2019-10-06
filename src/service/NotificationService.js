@@ -57,17 +57,17 @@ class NotificationService {
     };
 
     stopWatchingDesk = (deskId) => {
-        let saved = localStorage.getItem(storageKey);
-        if (saved) {
-            let desks = JSON.parse(saved);
-            desks.splice(desks.indexOf(deskId), 1);
-            localStorage.setItem(storageKey, JSON.stringify(desks));
-        }
-        this.wsSend({
-            code: 200,
-            type: "UNWATCH_DESK",
-            payload: deskId,
-        })
+        // let saved = localStorage.getItem(storageKey);
+        // if (saved) {
+        //     let desks = JSON.parse(saved);
+        //     desks.splice(desks.indexOf(deskId), 1);
+        //     localStorage.setItem(storageKey, JSON.stringify(desks));
+        // }
+        // this.wsSend({
+        //     code: 200,
+        //     type: "UNWATCH_DESK",
+        //     payload: deskId,
+        // })
     };
 
     getWatchingDesks = () => {
@@ -78,20 +78,22 @@ class NotificationService {
         return [];
     };
 
-    onSocketOpen = () => {
+    onSocketOpen = (evt) => {
+        console.log("Websocket", "onSocketOpen", evt)
         if (this.ws) {
+            console.log('WebSocket connect');
             this.wsReady = true;
-            let saved = localStorage.getItem(storageKey);
-            if (saved) {
-                let desks = JSON.parse(saved);
-                for (let i = 0; i < desks.length; ++i) {
-                    this.wsSend({
-                        code: 200,
-                        type: "WATCH_DESK",
-                        payload: desks[i],
-                    })
-                }
-            }
+            // let saved = localStorage.getItem(storageKey);
+            // if (saved) {
+            //     let desks = JSON.parse(saved);
+            //     for (let i = 0; i < desks.length; ++i) {
+            //         this.wsSend({
+            //             code: 200,
+            //             type: "WATCH_DESK",
+            //             payload: desks[i],
+            //         })
+            //     }
+            // }
         }
     };
 
@@ -126,6 +128,7 @@ class NotificationService {
         if (this.ws) {
             this.ws.close();
         }
+        console.log('initWebSocket');
         this.ws = new WebSocket(apiConfig.wsUrl + `?accessToken=${api.getToken()}`);
         this.ws.onopen = this.onSocketOpen;
         this.ws.onmessage = this.onSocketMessage;
@@ -144,7 +147,6 @@ class NotificationService {
 }
 
 const notificationService = new NotificationService();
-
 notificationService.initWebSocket();
 
 export default notificationService;

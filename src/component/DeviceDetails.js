@@ -1,9 +1,7 @@
 import React from 'react';
 import {withStyles} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import Typography from "@material-ui/core/Typography/Typography";
-import AppBar from "@material-ui/core/AppBar/AppBar";
 import api from "../api/Api";
 import Button from "@material-ui/core/Button/Button";
 import navigationService from "../service/NavigationService";
@@ -33,11 +31,21 @@ class DeviceDetails extends React.Component {
     loadDevice = () => {
         api.get(`/device/${this.props.match.params.deviceId}`).then(resp => {
             this.setState({device: resp})
+        }).catch(err => {
+            console.log("Error", err);
         });
 
         api.get(`/device/${this.props.match.params.deviceId}/events`).then(resp => {
             this.setState({events: resp})
         });
+    };
+
+    handleRemoveDeviceClick = () => {
+      if (window.confirm(`Delete device ${this.state.device.name}?`)) {
+          api.delete(`/device/${this.props.match.params.deviceId}`).then(resp => {
+            navigationService.goToDesk(this.state.device.deskId);
+          });
+      }
     };
 
     render = () => {
@@ -60,11 +68,13 @@ class DeviceDetails extends React.Component {
                             >
                                 Setup Face Recognition
                             </Button>
+
                             <Button variant={'outlined'}
-                                    color={'primary'}
+                                    color={'secondary'}
                                     className={classes.button}
+                                    onClick={this.handleRemoveDeviceClick}
                             >
-                                Show Config
+                                Remove Device
                             </Button>
                         </Paper>
                         <Paper className={classes.paper}>
